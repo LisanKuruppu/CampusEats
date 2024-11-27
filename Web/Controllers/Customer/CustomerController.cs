@@ -1,20 +1,29 @@
 using Core.Application.DTOs;
-using Core.Application.Services;
-using Microsoft.AspNetCore.Mvc;
-using Infrastructure.Persistence.Repositories;
-using Core.Domain.Entities;
 using Core.Application.Interfaces;
-
+using Microsoft.AspNetCore.Mvc;
 
 [Route("api/customer")]
 [ApiController]
 public class CustomerController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly ICartService _cartService;
+    private readonly IProductRepository _productRepository;
+    private readonly ICartRepository _cartRepository;
+    private readonly IOrderRepository _orderRepository;
 
-    public CustomerController(IUserService userService)
+    public CustomerController(
+        IUserService userService, 
+        ICartService cartService,
+        IProductRepository productRepository,
+        ICartRepository cartRepository,
+        IOrderRepository orderRepository)
     {
         _userService = userService;
+        _cartService = cartService;
+        _productRepository = productRepository;
+        _cartRepository = cartRepository;
+        _orderRepository = orderRepository;
     }
 
     [HttpPost("register")]
@@ -39,16 +48,16 @@ public class CustomerController : ControllerBase
     }
 
     [HttpGet("products")]
-    public async Task<IActionResult> GetProducts([FromServices] IProductRepository productRepository)
+    public async Task<IActionResult> GetProducts()
     {
-        var products = await productRepository.GetAllProductsAsync();
+        var products = await _productRepository.GetAllProductsAsync();
         return Ok(products);
     }
 
     [HttpGet("cart")]
-    public async Task<IActionResult> GetCart([FromServices] ICartRepository cartRepository, int customerId)
+    public async Task<IActionResult> GetCart(int customerId)
     {
-        var cart = await cartRepository.GetCartByCustomerIdAsync(customerId);
+        var cart = await _cartRepository.GetCartByCustomerIdAsync(customerId);
         return Ok(cart);
     }
 
@@ -66,19 +75,18 @@ public class CustomerController : ControllerBase
         return Ok("Item added to cart.");
     }
 
-    
     [HttpPost("cart/remove")]
-    public async Task<IActionResult> RemoveFromCart([FromServices] ICartRepository cartRepository, int customerId, int productId)
+    public async Task<IActionResult> RemoveFromCart(int customerId, int productId)
     {
-        await cartRepository.RemoveFromCartAsync(customerId, productId);
+        await _cartRepository.RemoveFromCartAsync(customerId, productId);
         return Ok("Item removed from cart.");
     }
 
     [HttpPost("checkout")]
-    public async Task<IActionResult> Checkout([FromServices] IOrderRepository orderRepository, [FromServices] ICartRepository cartRepository, int customerId)
+    public async Task<IActionResult> Checkout(int customerId)
     {
-        var cart = await cartRepository.GetCartByCustomerIdAsync(customerId);
-        if (!cart.Items.Any())
+        var cart = await _cartRepository.GetCartByCustomerIdAsync(customerId);
+        if (cart == null || !cart.Items.Any())
             return BadRequest("Cart is empty.");
 
         var order = new Order
@@ -87,8 +95,7 @@ public class CustomerController : ControllerBase
             Items = cart.Items
         };
 
-        await orderRepository.PlaceOrderAsync(order);
+        await _orderRepository.PlaceOrderAsync(order);
         return Ok("Order placed successfully.");
     }
-
 }
