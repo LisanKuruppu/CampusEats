@@ -1,21 +1,16 @@
 using Core.Application.DTOs;
 using Core.Domain.Entities;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Core.Application.Interfaces;
+using BCrypt.Net;
 
 namespace Core.Application.Services
 {
-    public interface IUserService
-    {
-        Task RegisterUserAsync(RegisterUserDto dto);
-        Task<User> LoginAsync(LoginUserDto dto);
-    }
-
     public class UserService : IUserService
     {
-        private readonly CampusEatsDbContext _context;
+        private readonly IDbContext _context;
 
-        public UserService(CampusEatsDbContext context)
+        public UserService(IDbContext context)
         {
             _context = context;
         }
@@ -26,18 +21,18 @@ namespace Core.Application.Services
             {
                 Name = dto.Name,
                 Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password), // Hash the password
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Role = "Customer"
             };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> LoginAsync(LoginUserDto dto)
+        public async Task<User?> LoginAsync(LoginUserDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new Exception("Invalid credentials");
+                return null;
 
             return user;
         }

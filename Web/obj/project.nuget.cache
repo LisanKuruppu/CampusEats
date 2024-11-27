@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Bp7wBYYTe0U=",
+  "dgSpecHash": "fEBUpJ0B7wU=",
   "success": true,
   "projectFilePath": "C:\\Users\\lisan\\OneDrive\\Documents\\DAT240\\CampusEats\\Web\\Web.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\lisan\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\lisan\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\lisan\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.8\\microsoft.aspnetcore.openapi.8.0.8.nupkg.sha512",
     "C:\\Users\\lisan\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

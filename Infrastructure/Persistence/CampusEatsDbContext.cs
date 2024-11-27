@@ -1,22 +1,21 @@
-using Microsoft.EntityFrameworkCore;
+using Core.Application.Interfaces;
 using Core.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
 {
-    public class CampusEatsDbContext : DbContext
+    public class CampusEatsDbContext : DbContext, IDbContext
     {
-        public CampusEatsDbContext(DbContextOptions<CampusEatsDbContext> options) 
-            : base(options) { }
+        public CampusEatsDbContext(DbContextOptions<CampusEatsDbContext> options) : base(options) { }
 
-        // Define DbSets for your entities
-        public DbSet<Product> Products { get; set; }
-        // public DbSet<Order> Orders { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Apply configurations here (e.g., Fluent API rules)
         }
     }
 }
