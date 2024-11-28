@@ -2,13 +2,6 @@ using Core.Domain.Entities;
 using Core.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public interface ICartRepository
-{
-    Task<Cart> GetCartByCustomerIdAsync(int customerId);
-    Task AddToCartAsync(int customerId, int productId, int quantity);
-    Task RemoveFromCartAsync(int customerId, int productId);
-}
-
 public class CartRepository : ICartRepository
 {
     private readonly IDbContext _context;
@@ -51,4 +44,20 @@ public class CartRepository : ICartRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> UpdateCartAsync(Cart cart)
+    {
+        try
+        {
+            _context.Carts.Update(cart);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Log exception here if necessary
+            return false;
+        }
+    }
+
 }

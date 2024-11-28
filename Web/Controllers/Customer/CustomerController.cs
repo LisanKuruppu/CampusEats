@@ -1,5 +1,6 @@
 using Core.Application.DTOs;
 using Core.Application.Interfaces;
+using Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/customer")]
@@ -98,4 +99,12 @@ public class CustomerController : ControllerBase
         await _orderRepository.PlaceOrderAsync(order);
         return Ok("Order placed successfully.");
     }
+
+    [HttpGet("customers")]
+    public async Task<IActionResult> GetAllCustomers([FromServices] ICustomerRepository customerRepository)
+    {
+        var customers = await customerRepository.GetAllCustomersAsync();
+        return Ok(customers);
+    }
+
 }

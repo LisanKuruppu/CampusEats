@@ -38,7 +38,9 @@ namespace Core.Application.Services
                 });
             }
 
-            return await _cartRepository.UpdateCartAsync(cart);
+            // Explicitly update the cart in the repository
+            await _cartRepository.UpdateCartAsync(cart);
+            return true;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Core.Application.Interfaces
 {
     public interface IDbContext
     {
+        DbSet<Customer> Customers { get; }
         DbSet<User> Users { get; }
         DbSet<Product> Products { get; }
         DbSet<Cart> Carts { get; }
